@@ -256,8 +256,8 @@ right = new MotorControllerGroup(rightFrontMotor, rightRearMotor  );
     
     public void run(double l, double r) {
         //runs numbers from joystick y axis
-        leftFrontMotor.set(l);
-        rightFrontMotor.set(r);
+        left.set(l);
+        right.set(r);
       }
 
       public double getLeftEncoder(){
