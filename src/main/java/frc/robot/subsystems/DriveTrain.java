@@ -153,7 +153,12 @@ try { navx = new AHRS(SPI.Port.kMXP);} catch (RuntimeException ex ) {DriverStati
           SmartDashboard.putNumber(   "IMU_Update_Count",     navx.getUpdateCount());
 
 
-    }   
+    }  
+    
+    public void run(double l, double r) {
+        leftFrontMotor.set(l);
+        rightFrontMotor.set(r);
+      }
 
     @Override
     public void simulationPeriodic() {
