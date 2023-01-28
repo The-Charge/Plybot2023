@@ -57,8 +57,8 @@ public class TankDrive extends CommandBase {
     @Override
     public void execute() {
         double leftSpeed, rightSpeed;
-        rightSpeed = -RobotContainer.getInstance().getRightJoystick().getY();
-        leftSpeed = -RobotContainer.getInstance().getLeftJoystick().getY();
+        rightSpeed = -RobotContainer.getInstance().getrightJoystick().getY();
+        leftSpeed = -RobotContainer.getInstance().getleftJoystick().getY();
 
         m_driveTrain.run(leftSpeed, rightSpeed);
     }
