@@ -248,17 +248,16 @@ right = new MotorControllerGroup(rightFrontMotor, rightRearMotor  );
           SmartDashboard.putNumber(   "IMU_Byte_Count",       navx.getByteCount());
           SmartDashboard.putNumber(   "IMU_Update_Count",     navx.getUpdateCount());
 
-
+        
+          //displays encoder ticks
+          SmartDashboard.putNumber("Left Encoder", getLeftEncoder());
+          SmartDashboard.putNumber("Right Encoder", getRightEncoder());
     }  
     
     public void run(double l, double r) {
         //runs numbers from joystick y axis
         leftFrontMotor.set(l);
         rightFrontMotor.set(r);
-
-        //displays encoder ticks
-        SmartDashboard.putNumber("Left Encoder", getLeftEncoder());
-        SmartDashboard.putNumber("Right Encoder", getRightEncoder());
       }
 
       public double getLeftEncoder(){
