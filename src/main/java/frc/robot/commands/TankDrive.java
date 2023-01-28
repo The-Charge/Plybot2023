@@ -56,10 +56,12 @@ public class TankDrive extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
+        //basic code for reading the joystick y axis
         double leftSpeed, rightSpeed;
         rightSpeed = -RobotContainer.getInstance().getrightJoystick().getY();
         leftSpeed = -RobotContainer.getInstance().getleftJoystick().getY();
 
+        //sends to drivetrain
         m_driveTrain.run(leftSpeed, rightSpeed);
     }
 
