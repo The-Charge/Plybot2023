@@ -82,6 +82,19 @@ leftFrontMotor.configNominalOutputReverse(0, 30);
 leftFrontMotor.configPeakOutputForward(1, 30);
 leftFrontMotor.configPeakOutputReverse(-1, 30);
         
+/* Configure Sensor */
+        // Phase sensor to have positive increment when driving Talon Forward (Green LED)
+leftFrontMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 30);
+leftFrontMotor.setSensorPhase(false);
+
+
+        /* Set gains in slot0 - see documentation */
+leftFrontMotor.selectProfileSlot(0, 0);
+leftFrontMotor.config_kF(0, 0.0, 30);
+leftFrontMotor.config_kP(0, 0.0, 30);
+leftFrontMotor.config_kI(0, 0.0, 30);
+leftFrontMotor.config_kD(0, 0.0, 30);
+        
 
 
 
@@ -141,6 +154,19 @@ rightFrontMotor.configNominalOutputForward(0, 30);
 rightFrontMotor.configNominalOutputReverse(0, 30);
 rightFrontMotor.configPeakOutputForward(1, 30);
 rightFrontMotor.configPeakOutputReverse(-1, 30);
+        
+/* Configure Sensor */
+        // Phase sensor to have positive increment when driving Talon Forward (Green LED)
+rightFrontMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 30);
+rightFrontMotor.setSensorPhase(false);
+
+
+        /* Set gains in slot0 - see documentation */
+rightFrontMotor.selectProfileSlot(0, 0);
+rightFrontMotor.config_kF(0, 0.0, 30);
+rightFrontMotor.config_kP(0, 0.0, 30);
+rightFrontMotor.config_kI(0, 0.0, 30);
+rightFrontMotor.config_kD(0, 0.0, 30);
         
 
 

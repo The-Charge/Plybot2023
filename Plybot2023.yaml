@@ -63,7 +63,7 @@ Children:
             default: None
             name: Data Port Encoder
             validators: null
-            value: None
+            value: QuadEncoder
         Base: Talon SRX Enhanced
         Name: leftFrontMotor
       - Children: []
@@ -177,7 +177,7 @@ Children:
             default: None
             name: Data Port Encoder
             validators: null
-            value: None
+            value: QuadEncoder
         Base: Talon SRX Enhanced
         Name: rightFrontMotor
       - Children: []
