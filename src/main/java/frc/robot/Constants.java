@@ -30,12 +30,12 @@ public class Constants {
     *   public static final int kRightMotor2Port = 3; 
     * }
     */ 
-    public static final double ksVolts = 2.075;
-    public static final double kvVoltSecondsPerMeter = 1.605E-08;
-    public static final double kaVoltSecondsSquaredPerMeter = 3.0884E-09;
-    public static final double kPDriveVel = 0;
+    public static final double ksVolts = 1.8516;
+    public static final double kvVoltSecondsPerMeter = 4.9995;
+    public static final double kaVoltSecondsSquaredPerMeter = 1.0077;
+    public static final double kPDriveVel = 1.7814;
 
-    public static final double kTrackwidthMeters = 0.69; //TODO
+    public static final double kTrackwidthMeters = .67847; 
     public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(kTrackwidthMeters);
     
     public static final double kMaxSpeedMetersPerSecond = 3;
