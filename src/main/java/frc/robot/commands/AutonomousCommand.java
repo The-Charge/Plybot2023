@@ -11,13 +11,21 @@
 // ROBOTBUILDER TYPE: Command.
 
 package frc.robot.commands;
+import java.util.HashMap;
 import java.util.List;
+
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.auto.PIDConstants;
+import com.pathplanner.lib.auto.RamseteAutoBuilder;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
@@ -68,13 +76,47 @@ public class AutonomousCommand extends CommandBase {
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
-        Command m_autonomousCommand = getAutonomousCommand();
+        Command m_autonomousCommand = getAutonomousCommandPath();
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
         }
     }
+
+    public Command getAutonomousCommandPath() {
+        
+
+        // This will load the file "Example Path.path" and generate it with a max velocity of 4 m/s and a max acceleration of 3 m/s^2
+    PathPlannerTrajectory examplePath = PathPlanner.loadPath("Reverse Waypoint", new PathConstraints(Constants.kMaxSpeedMetersPerSecond, Constants.kMaxAccelerationMetersPerSecondSquared));
+    
+    HashMap<String, Command> eventMap = new HashMap<>();
+    // Create the AutoBuilder. This only needs to be created once when robot code starts, not every time you want to create an auto command. A good place to put this is in RobotContainer along with your subsystems.
+    RamseteAutoBuilder autoBuilder = new RamseteAutoBuilder(
+        m_drivetrain::getPose,
+        m_drivetrain::resetOdometry,
+        new RamseteController(Constants.kRamseteB, Constants.kRamseteZeta),
+        Constants.kDriveKinematics,
+        new SimpleMotorFeedforward(
+            Constants.ksVolts,
+            Constants.kvVoltSecondsPerMeter,
+            Constants.kaVoltSecondsSquaredPerMeter),
+        m_drivetrain::getWheelSpeeds,
+        new PIDConstants(Constants.kPDriveVel, 1, 0), //0.1714
+        m_drivetrain::tankDriveVolts,
+        eventMap,
+        true,
+        m_drivetrain
+    );
+
+    Command fullAuto = autoBuilder.fullAuto(examplePath);
+
+
+    // Run path following command, then stop at the end.
+    return new SequentialCommandGroup(
+        fullAuto.andThen(() -> m_drivetrain.tankDriveVolts(0, 0)));
+    }
+
 
     public Command getAutonomousCommand() {
         // Create a voltage constraint to ensure we don't accelerate too fast
@@ -108,9 +150,10 @@ public class AutonomousCommand extends CommandBase {
         // Start at the origin facing the +X direction
         new Pose2d(0, 0, new Rotation2d(0)),
         // Pass through these two interior waypoints, making an 's' curve path
-        List.of(/*new Translation2d(1, 1), new Translation2d(2, -1)*/),
-        // End 2 meters straight ahead of where we started, facing forward
-        new Pose2d(2, 0, new Rotation2d(0)),
+        List.of(/*new Translation2d(1, 1), new Translation2d(1, 0.5)*/),
+        // End 3 meters straight ahead of where we started, facing forward
+        new Pose2d(2, 1
+        , new Rotation2d(Math.toRadians(0))),
         // Pass config
         config);
 
@@ -125,9 +168,9 @@ public class AutonomousCommand extends CommandBase {
             Constants.kaVoltSecondsSquaredPerMeter),
         Constants.kDriveKinematics,
         m_drivetrain::getWheelSpeeds,
-        new PIDController(Constants.kPDriveVel, 0, 0),
-        new PIDController(Constants.kPDriveVel, 0, 0),
+        new PIDController(Constants.kPDriveVel, 1, 0), //0.1714
         // RamseteCommand passes volts to the callback
+        new PIDController(Constants.kPDriveVel, 1, 0),
         m_drivetrain::tankDriveVolts,
         m_drivetrain);
 

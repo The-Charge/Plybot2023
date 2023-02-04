@@ -54,7 +54,8 @@ private MotorControllerGroup right;
     */
     // Odometry class for tracking robot pose
     private final DifferentialDriveOdometry m_odometry;
-    private static final double ENCODER_TICKS_PER_METER = 17400;
+    private static final double LEFT_ENCODER_TICKS_PER_METER = 17462;
+    private static final double RIGHT_ENCODER_TICKS_PER_METER = 17464;
     private final double HUNDRED_MS_TO_SEC = 10;
 
     public DriveTrain() {
@@ -264,6 +265,10 @@ right = new MotorControllerGroup(rightFrontMotor, rightRearMotor  );
           SmartDashboard.putNumber("Left Distance", getLeftEncoderDistance());
           SmartDashboard.putNumber("Right Distance", getRightEncoderDistance());
 
+          SmartDashboard.putNumber("Get Heading", getHeading());
+
+          SmartDashboard.putStringArray("Auto Paths", null);
+
           m_odometry.update(Rotation2d.fromDegrees(getHeading()), 
                 getLeftEncoderDistance(), 
                 getRightEncoderDistance());
@@ -292,9 +297,10 @@ right = new MotorControllerGroup(rightFrontMotor, rightRearMotor  );
       }
 
       public void resetOdometry(Pose2d pose) {
+        zeroHeading();
         resetEncoders();
         m_odometry.resetPosition(
-            navx.getRotation2d(), getLeftEncoderDistance(), getRightEncoderDistance(), pose);
+          Rotation2d.fromDegrees(getHeading()), getLeftEncoderDistance(), getRightEncoderDistance(), pose);
       }
 
       public void zeroHeading() {
@@ -315,19 +321,19 @@ right = new MotorControllerGroup(rightFrontMotor, rightRearMotor  );
       }
 
       public double getLeftEncoderVelocity(){
-        return leftFrontMotor.getSelectedSensorVelocity() * HUNDRED_MS_TO_SEC / ENCODER_TICKS_PER_METER;
+        return leftFrontMotor.getSelectedSensorVelocity() * HUNDRED_MS_TO_SEC / LEFT_ENCODER_TICKS_PER_METER;
       }
 
       public double getRightEncoderVelocity(){
-        return rightFrontMotor.getSelectedSensorVelocity() * HUNDRED_MS_TO_SEC / ENCODER_TICKS_PER_METER;
+        return rightFrontMotor.getSelectedSensorVelocity() * HUNDRED_MS_TO_SEC / RIGHT_ENCODER_TICKS_PER_METER;
       }
 
       public double getLeftEncoderDistance(){
-        return getLeftEncoder() / ENCODER_TICKS_PER_METER;
+        return getLeftEncoder() / LEFT_ENCODER_TICKS_PER_METER;
       }
 
       public double getRightEncoderDistance(){
-        return getRightEncoder() / ENCODER_TICKS_PER_METER;
+        return getRightEncoder() / RIGHT_ENCODER_TICKS_PER_METER;
       }
 
       public void resetEncoders() {
