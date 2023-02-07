@@ -267,7 +267,7 @@ right = new MotorControllerGroup(rightFrontMotor, rightRearMotor  );
 
           SmartDashboard.putNumber("Get Heading", getHeading());
 
-          SmartDashboard.putStringArray("Auto Paths", null);
+          //SmartDashboard.putStringArray("Auto Paths", null);
 
           m_odometry.update(Rotation2d.fromDegrees(getHeading()), 
                 getLeftEncoderDistance(), 
