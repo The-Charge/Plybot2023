@@ -88,8 +88,6 @@ public class AutonomousCommand extends CommandBase {
         // This will load the file "Example Path.path" and generate it with a max velocity of 4 m/s and a max acceleration of 3 m/s^2
     PathPlannerTrajectory examplePath = PathPlanner.loadPath("Reverse Waypoint", new PathConstraints(Constants.kMaxSpeedMetersPerSecond, Constants.kMaxAccelerationMetersPerSecondSquared));
     
-    m_drivetrain.resetOdometry(examplePath.getInitialPose());
-
     HashMap<String, Command> eventMap = new HashMap<>();
     // Create the AutoBuilder. This only needs to be created once when robot code starts, not every time you want to create an auto command. A good place to put this is in RobotContainer along with your subsystems.
     RamseteAutoBuilder autoBuilder = new RamseteAutoBuilder(
