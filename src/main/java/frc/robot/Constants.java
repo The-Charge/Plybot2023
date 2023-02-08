@@ -32,7 +32,7 @@ public class Constants {
     */ 
     public static final double ksVolts = 1.8516;
     public static final double kvVoltSecondsPerMeter = 4.9995;
-    public static final double kaVoltSecondsSquaredPerMeter = .16795; //1.0077
+    public static final double kaVoltSecondsSquaredPerMeter = .16795;
     public static final double kPDriveVel = 1.7814;
     public static final double kIDriveVel = 1;
     public static final double kDDriveVel = 0.05;
