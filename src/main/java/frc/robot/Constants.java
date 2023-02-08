@@ -43,5 +43,10 @@ public class Constants {
 
     public static final double kRamseteB = 2;
     public static final double kRamseteZeta = 0.7;
+
+    public static final String cameraName = "";
+
+    public static final double CAMERA_HEIGHT_METERS = 0;
+    public static final double CAMERA_PITCH_RADIANS = 0;
 }
 

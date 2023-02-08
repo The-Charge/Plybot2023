@@ -117,7 +117,35 @@ public class AutonomousCommand extends CommandBase {
         fullAuto.andThen(() -> m_drivetrain.tankDriveVolts(0, 0)));
     }
 
+    public Command getAutonomousCommandPath(PathPlannerTrajectory m_trajectory) {
+        
+    HashMap<String, Command> eventMap = new HashMap<>();
+    // Create the AutoBuilder. This only needs to be created once when robot code starts, not every time you want to create an auto command. A good place to put this is in RobotContainer along with your subsystems.
+    RamseteAutoBuilder autoBuilder = new RamseteAutoBuilder(
+        m_drivetrain::getPose,
+        m_drivetrain::resetOdometry,
+        new RamseteController(Constants.kRamseteB, Constants.kRamseteZeta),
+        Constants.kDriveKinematics,
+        new SimpleMotorFeedforward(
+            Constants.ksVolts,
+            Constants.kvVoltSecondsPerMeter,
+            Constants.kaVoltSecondsSquaredPerMeter),
+        m_drivetrain::getWheelSpeeds,
+        new PIDConstants(Constants.kPDriveVel, 1, 0), //0.1714
+        m_drivetrain::tankDriveVolts,
+        eventMap,
+        true,
+        m_drivetrain
+    );
 
+    Command fullAuto = autoBuilder.fullAuto(m_trajectory);
+
+
+    // Run path following command, then stop at the end.
+    return new SequentialCommandGroup(
+        fullAuto.andThen(() -> m_drivetrain.tankDriveVolts(0, 0)));
+    }
+    
     public Command getAutonomousCommand() {
         // Create a voltage constraint to ensure we don't accelerate too fast
 
