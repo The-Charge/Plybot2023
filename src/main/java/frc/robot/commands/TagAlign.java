@@ -25,6 +25,7 @@ public class TagAlign extends CommandBase {
     public double TARGET_HEIGHT_METERS = 0; //Height of target (to be changed)
     final double GOAL_RANGE_METERS = Units.feetToMeters(2); //distance to reach between tag and robot
     public double range, bestTargetYaw;
+    public boolean fin = false;
 
     public TagAlign(DriveTrain m_drivetrain, Camera m_camera){
         this.m_drivetrain = m_drivetrain;
@@ -41,7 +42,7 @@ public class TagAlign extends CommandBase {
         var result = m_camera.getFrontCamera().getLatestResult();
         if (result.hasTargets()) {
             //calculate range between robot and bestTarget
-            if (result.getBestTarget().getFiducialId() == 4) {
+            if (result.getBestTarget().getFiducialId() == 7) {
                 TARGET_HEIGHT_METERS = Units.inchesToMeters(15.13);
             }
             else {
@@ -49,13 +50,18 @@ public class TagAlign extends CommandBase {
             }
             range = PhotonUtils.calculateDistanceToTargetMeters(Constants.CAMERA_HEIGHT_METERS,
             TARGET_HEIGHT_METERS, Constants.CAMERA_PITCH_RADIANS, Units.degreesToRadians(result.getBestTarget().getPitch()));
-            SmartDashboard.putNumber("Range", range);
-
+            double yaw = result.getBestTarget().getYaw();
             PathPlannerTrajectory traj1 = PathPlanner.generatePath(
-                new PathConstraints(4, 3), 
-                new PathPoint(new Translation2d(1.0, 1.0), Rotation2d.fromDegrees(0)), // position, heading
-                new PathPoint(new Translation2d(3.0, 3.0), Rotation2d.fromDegrees(45)) // position, heading
+                new PathConstraints(Constants.kMaxSpeedMetersPerSecond , Constants.kMaxAccelerationMetersPerSecondSquared), 
+                new PathPoint(new Translation2d(0, 0), Rotation2d.fromDegrees(yaw)), // position, heading
+                new PathPoint(new Translation2d(Math.cos(yaw), Math.sin(yaw)), Rotation2d.fromDegrees(90)) // position, heading
             );
+            SmartDashboard.putNumber("Range", range);
+            SmartDashboard.putNumber("Yaw", yaw);
+            SmartDashboard.putNumber("X", Math.cos(yaw));
+            SmartDashboard.putNumber("Y", Math.sin(yaw));
+            //new AutonomousCommand(m_drivetrain, traj1);
+            fin = true;
         }
         else {
             //no targets -> run tankDrive until there is a target in sight
@@ -65,11 +71,12 @@ public class TagAlign extends CommandBase {
     }
     @Override
     public boolean isFinished() {
-        if (Math.abs(GOAL_RANGE_METERS - range) < 0.05 && bestTargetYaw < 2) {
-            //m_drivetrain.setCoastMode();
-            return true;
-        }
-        return false;
+        // if (Math.abs(GOAL_RANGE_METERS - range) < 0.05 && bestTargetYaw < 2) {
+        //     //m_drivetrain.setCoastMode();
+        //     return true;
+        // }
+        // return false;
+        return fin;
     }
 
 }
