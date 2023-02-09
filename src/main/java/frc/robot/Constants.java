@@ -11,7 +11,9 @@
 
 package frc.robot;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.math.util.Units;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -44,9 +46,21 @@ public class Constants {
     public static final double kRamseteB = 2;
     public static final double kRamseteZeta = 0.7;
 
-    public static final String cameraName = "";
+    public static final String cameraName = "HD_USB_Camera";
 
     public static final double CAMERA_HEIGHT_METERS = 0;
     public static final double CAMERA_PITCH_RADIANS = 0;
+
+    public static final double nodeSideDistanceMeters = Units.inchesToMeters(6.25 + 0);
+
+    public static final AprilTagFieldLayout tagLayout = new AprilTagFieldLayout(null, 0,0); //Experimental AprilTagFieldLayout
+    /*Hopefully with accurate measurement from research tomorrow:
+     * Robot takes range calculation when a tag is seen, does trig, gets a coordinate.
+     * Concern: How to continuously update this value? More cameras? 
+     * AprilTagFieldLayout: ID Number, Coordinate (x,y) (not sure about z...), Rotation (180 or 0. Might need to vary depending on which side we are on...)
+     * 
+     * Need two different lists of tags depending on which side?
+     * Probably can set the tag values depending on isRedSide() within the TagAlign Command...
+     */
 }
 
