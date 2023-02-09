@@ -138,7 +138,7 @@ public Joystick getrightJoystick() {
   */
   public Command getAutonomousCommand() {
     // The selected command will be run in autonomous
-    return m_chooser.getSelected();
+    return new AutonomousCommand(m_driveTrain);
   }
   
 
