@@ -8,7 +8,6 @@
 // update. Deleting the comments indicating the section will prevent
 // it from being updated in the future.
 
-
 package frc.robot;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
@@ -16,30 +15,34 @@ import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.util.Units;
 
 /**
- * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
- * constants.  This class should not be used for any other purpose.  All constants should be
- * declared globally (i.e. public static).  Do not put anything functional in this class.
+ * The Constants class provides a convenient place for teams to hold robot-wide
+ * numerical or boolean constants. This class should not be used for any other
+ * purpose. All constants should be declared globally (i.e. public static). Do
+ * not put anything functional in this class.
  *
- * <p>It is advised to statically import this class (or one of its inner classes) wherever the
- * constants are needed, to reduce verbosity.
+ * It is advised to statically import this class (or one of its inner classes)
+ * wherever the constants are needed, to reduce verbosity.
  */
 public class Constants {
-   /**
-    * public static final class DriveConstants {
-    *   public static final int kLeftMotor1Port = 0;
-    *   public static final int kLeftMotor2Port = 1;
-    *   public static final int kRightMotor1Port = 2;
-    *   public static final int kRightMotor2Port = 3; 
-    * }
-    */ 
+    /**
+     * public static final class DriveConstants {
+     * public static final int kLeftMotor1Port = 0;
+     * public static final int kLeftMotor2Port = 1;
+     * public static final int kRightMotor1Port = 2;
+     * public static final int kRightMotor2Port = 3;
+     * }
+     */
     public static final double ksVolts = 1.8516;
     public static final double kvVoltSecondsPerMeter = 4.9995;
-    public static final double kaVoltSecondsSquaredPerMeter = 1.0077;
+    public static final double kaVoltSecondsSquaredPerMeter = .16795;
     public static final double kPDriveVel = 1.7814;
+    public static final double kIDriveVel = 1;
+    public static final double kDDriveVel = 0.05;
 
-    public static final double kTrackwidthMeters = .67847; 
-    public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(kTrackwidthMeters);
-    
+    public static final double kTrackwidthMeters = .67847;
+    public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(
+            kTrackwidthMeters);
+
     public static final double kMaxSpeedMetersPerSecond = 3;
     public static final double kMaxAccelerationMetersPerSecondSquared = 1;
 
@@ -62,5 +65,5 @@ public class Constants {
      * Need two different lists of tags depending on which side?
      * Probably can set the tag values depending on isRedSide() within the TagAlign Command...
      */
-}
 
+}
