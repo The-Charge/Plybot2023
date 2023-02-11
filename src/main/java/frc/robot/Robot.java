@@ -14,8 +14,12 @@ package frc.robot;
 
 import edu.wpi.first.hal.FRCNetComm.tInstances;
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
+
+import com.pathplanner.lib.server.PathPlannerServer;
+
 import edu.wpi.first.hal.HAL;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -42,6 +46,21 @@ public class Robot extends TimedRobot {
         // autonomous chooser on the dashboard.
         m_robotContainer = RobotContainer.getInstance();
         HAL.report(tResourceType.kResourceType_Framework, tInstances.kFramework_RobotBuilder);
+        PathPlannerServer.startServer(5811); // 5811 = port number. adjust this according to your needs
+
+        ValueModifier();
+    }
+
+    private void ValueModifier(){
+        SmartDashboard.putNumber("ksVolts", Constants.ksVolts);
+        SmartDashboard.putNumber("kvVoltSecondsPerMeter", Constants.kvVoltSecondsPerMeter);
+        SmartDashboard.putNumber("kaVoltSecondsSquaredPerMeter", Constants.kaVoltSecondsSquaredPerMeter);
+        SmartDashboard.putNumber("kPDriveVel", Constants.kPDriveVel);
+        SmartDashboard.putNumber("kIDriveVel", Constants.kIDriveVel);
+        SmartDashboard.putNumber("kDDriveVel", Constants.kDDriveVel);
+        SmartDashboard.putNumber("kMaxSpeedMetersPerSecond", Constants.kMaxSpeedMetersPerSecond);
+        SmartDashboard.putNumber("kMaxAccelerationMetersPerSecondSquared", Constants.kMaxAccelerationMetersPerSecondSquared);
+
     }
 
     /**
@@ -66,6 +85,7 @@ public class Robot extends TimedRobot {
     */
     @Override
     public void disabledInit() {
+        RobotContainer.getInstance().m_driveTrain.setCoast();
     }
 
     @Override
@@ -78,6 +98,7 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
         m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+        RobotContainer.getInstance().m_driveTrain.setBrake();
 
         // schedule the autonomous command (example)
         if (m_autonomousCommand != null) {
@@ -101,6 +122,7 @@ public class Robot extends TimedRobot {
         if (m_autonomousCommand != null) {
             m_autonomousCommand.cancel();
         }
+        RobotContainer.getInstance().m_driveTrain.setBrake();
     }
 
     /**
