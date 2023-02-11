@@ -223,8 +223,7 @@ public class DriveTrain extends SubsystemBase {
     zeroHeading();
     resetEncoders();
     m_odometry.resetPosition(
-        Rotation2d.fromDegrees(getHeading()), getLeftEncoderDistance(),
-        getRightEncoderDistance(), pose);
+        Rotation2d.fromDegrees(getHeading()), getLeftEncoderDistance(), getRightEncoderDistance(), pose);
   }
 
   public void zeroHeading() {

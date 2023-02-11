@@ -40,7 +40,6 @@ import frc.robot.subsystems.DriveTrain;
  */
 public class AutonomousCommand extends CommandBase {
 
-    DriveTrain m_drivetrain;
     private Command m_autonomousCommand;
 
     private double ksVolts;
@@ -77,7 +76,9 @@ public class AutonomousCommand extends CommandBase {
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
-        m_autonomousCommand = getAutonomousCommandPath();
+        if (RobotContainer.getInstance().getSelectedPath() != "None") {
+            m_autonomousCommand = getAutonomousCommandPath();
+        }
 
         // schedule the autonomous command (example)
         if (m_autonomousCommand != null) {
@@ -105,26 +106,26 @@ public class AutonomousCommand extends CommandBase {
          * put this is in RobotContainer along with your subsystems.
          */
         RamseteAutoBuilder autoBuilder = new RamseteAutoBuilder(
-                m_drivetrain::getPose,
-                m_drivetrain::resetOdometry,
+                m_driveTrain::getPose,
+                m_driveTrain::resetOdometry,
                 new RamseteController(Constants.kRamseteB, Constants.kRamseteZeta),
                 Constants.kDriveKinematics,
                 new SimpleMotorFeedforward(
                         ksVolts,
                         kvVoltSecondsPerMeter,
                         kaVoltSecondsSquaredPerMeter),
-                m_drivetrain::getWheelSpeeds,
+                m_driveTrain::getWheelSpeeds,
                 new PIDConstants(kPDriveVel, kIDriveVel, kDDriveVel),
-                m_drivetrain::tankDriveVolts,
+                m_driveTrain::tankDriveVolts,
                 eventMap,
                 true,
-                m_drivetrain);
+                m_driveTrain);
 
         Command fullAuto = autoBuilder.fullAuto(examplePath);
 
         // Run path following command, then stop at the end.
         return new SequentialCommandGroup(
-                fullAuto.andThen(() -> m_drivetrain.tankDriveVolts(0, 0)));
+                fullAuto.andThen(() -> m_driveTrain.tankDriveVolts(0, 0)));
     }
 
     private void getSmartDashValues() {
@@ -144,7 +145,9 @@ public class AutonomousCommand extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        SmartDashboard.putBoolean("Path Running", m_autonomousCommand.isScheduled());
+        if (m_autonomousCommand != null) {
+            SmartDashboard.putBoolean("Path Running", m_autonomousCommand.isScheduled());
+        }
 
     }
 
