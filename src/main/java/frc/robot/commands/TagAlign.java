@@ -1,22 +1,30 @@
 package frc.robot.commands;
 
+import java.util.HashMap;
+
 import org.photonvision.PhotonUtils;
 
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.PathPoint;
+import com.pathplanner.lib.auto.PIDConstants;
+import com.pathplanner.lib.auto.RamseteAutoBuilder;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.*;
-
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 
 
 public class TagAlign extends CommandBase {
@@ -52,18 +60,20 @@ public class TagAlign extends CommandBase {
             }
             range = PhotonUtils.calculateDistanceToTargetMeters(Constants.CAMERA_HEIGHT_METERS,
             TARGET_HEIGHT_METERS, Constants.CAMERA_PITCH_RADIANS, Units.degreesToRadians(result.getBestTarget().getPitch()));
-            double yaw = result.getBestTarget().getYaw();
+            double yaw = -1 * result.getBestTarget().getYaw();
             PathPlannerTrajectory traj1 = PathPlanner.generatePath(
-                new PathConstraints(Constants.kMaxSpeedMetersPerSecond , Constants.kMaxAccelerationMetersPerSecondSquared), 
+                new PathConstraints(Constants.kMaxSpeedMetersPerSecond, Constants.kMaxAccelerationMetersPerSecondSquared), 
                 new PathPoint(new Translation2d(0, 0), Rotation2d.fromDegrees(yaw)), // position, heading
-                new PathPoint(new Translation2d(range * Math.sin(yaw) + side * Constants.nodeSideDistanceMeters, range * Math.cos(yaw)), Rotation2d.fromDegrees(0)) // position (plus/minus side we aim for), heading
+                new PathPoint(new Translation2d(1,0), Rotation2d.fromDegrees(yaw)) // position (plus/minus side we aim for), heading
+                //new PathPoint(new Translation2d(range * Math.sin(Units.degreesToRadians(yaw)), range * Math.cos(Units.degreesToRadians(yaw))), Rotation2d.fromDegrees(0)) // position (plus/minus side we aim for), heading
             );
+            SmartDashboard.putNumber("MaxSpeedMeters/Second", Constants.kMaxSpeedMetersPerSecond);
             SmartDashboard.putNumber("Range", range); //Distance from center of Robot to the Apriltag center
             SmartDashboard.putNumber("Yaw", yaw); //Angle between Robot and Tag
-            SmartDashboard.putNumber("X", range * Math.sin(yaw)); //X distance between Robot and Tag
-            SmartDashboard.putNumber("Y", range * Math.cos(yaw)); //Y distance between Robot and Tag
-            //new AutonomousCommand(m_drivetrain, traj1); //Send generated path to be run.
+            SmartDashboard.putNumber("X", Math.sin(Units.degreesToRadians(yaw))); //X distance between Robot and Tag
+            SmartDashboard.putNumber("Y", Math.cos(Units.degreesToRadians(yaw))); //Y distance between Robot and Tag
 
+            HashMap<String, Command> eventMap = new HashMap<>();
             /*Strategy Discussion: Fully automate the whole scoring process?
              * Utilize FollowPathWithEvents?
              * Otherwise, perhaps just use sequence of commands.
@@ -82,7 +92,26 @@ public class TagAlign extends CommandBase {
              * -> Arm lowers -> Claw opens (Piece hopefully drops) -> ???
              * ???: Return to Driver input? Automatically drive out of the "trench"?
             */
+            RamseteAutoBuilder autoBuilder = new RamseteAutoBuilder(
+                m_drivetrain::getPose,
+                m_drivetrain::resetOdometry,
+                new RamseteController(Constants.kRamseteB, Constants.kRamseteZeta),
+                Constants.kDriveKinematics,
+                new SimpleMotorFeedforward(
+                        Constants.ksVolts,
+                        Constants.kvVoltSecondsPerMeter,
+                        Constants.kaVoltSecondsSquaredPerMeter),
+                m_drivetrain::getWheelSpeeds,
+                new PIDConstants(Constants.kPDriveVel, Constants.kIDriveVel, Constants.kDDriveVel),
+                m_drivetrain::tankDriveVolts,
+                eventMap,
+                true,
+                m_drivetrain);
 
+            Command fullAuto = autoBuilder.fullAuto(traj1);
+            SequentialCommandGroup group = new SequentialCommandGroup(
+                fullAuto.andThen(() -> m_drivetrain.tankDriveVolts(0, 0)));
+            group.schedule();
             fin = true;
         }
         else {

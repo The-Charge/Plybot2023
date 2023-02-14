@@ -49,8 +49,8 @@ public class Constants {
     public static final double kTrackwidthMeters = .67847; 
     public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(kTrackwidthMeters);
     
-    public static final double kMaxSpeedMetersPerSecond = 3;
-    public static final double kMaxAccelerationMetersPerSecondSquared = 1;
+    public static final double kMaxSpeedMetersPerSecond = 1.5;
+    public static final double kMaxAccelerationMetersPerSecondSquared = 0.5;
 
     public static final double kRamseteB = 2;
     public static final double kRamseteZeta = 0.7;
@@ -58,7 +58,7 @@ public class Constants {
     public static final String cameraName = "HD_USB_Camera";
 
     public static final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(9.25);
-    public static final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(7.5);
+    public static final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(6.75);
 
     public static final double nodeSideDistanceMeters = Units.inchesToMeters(6.25 + 0);
 
