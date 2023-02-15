@@ -1,7 +1,9 @@
 package frc.robot.subsystems;
 
 import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonUtils;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -20,11 +22,16 @@ public class Camera extends SubsystemBase{
 
         var res = frontCamera.getLatestResult();
         if (res.hasTargets()) { //if targets sighted
+            double range = PhotonUtils.calculateDistanceToTargetMeters(Constants.CAMERA_HEIGHT_METERS,
+            Units.inchesToMeters(21), Constants.CAMERA_PITCH_RADIANS, Units.degreesToRadians(res.getBestTarget().getPitch()));
+ 
             var bestTarget = res.getBestTarget(); //get the "best target"
             SmartDashboard.putNumber("ID", bestTarget.getFiducialId()); //put "best target" ID onto smartdash
+            SmartDashboard.putNumber("Range", range);
         }
         else {
             SmartDashboard.putNumber("ID", -1); //no target found
+            SmartDashboard.putNumber("Range", -1);
         }
         SmartDashboard.putBoolean("Has AprilTag Target", frontCamera.getLatestResult().hasTargets());
     }

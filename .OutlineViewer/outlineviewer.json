@@ -1,0 +1,18 @@
+{
+  "Connections": {
+    "open": true
+  },
+  "NetworkTables Settings": {
+    "mode": "Client (NT4)",
+    "serverTeam": "2619"
+  },
+  "Persistent Values": {
+    "open": false
+  },
+  "Server": {
+    "open": true
+  },
+  "Transitory Values": {
+    "open": false
+  }
+}

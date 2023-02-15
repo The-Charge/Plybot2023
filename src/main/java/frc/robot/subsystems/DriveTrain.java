@@ -245,10 +245,12 @@ public class DriveTrain extends SubsystemBase {
 
   public void ShiftHigh() {
     shiftSpeed.set(false);
+    SmartDashboard.putBoolean("Shift High", true);
   }
 
   public void ShiftLow() {
     shiftSpeed.set(true);
+    SmartDashboard.putBoolean("Shift High", false);
   }
 
   public double getLeftEncoderVelocity() {
@@ -278,6 +280,7 @@ public class DriveTrain extends SubsystemBase {
 
     rightFrontMotor.setNeutralMode(NeutralMode.Brake);
     rightRearMotor.setNeutralMode(NeutralMode.Brake);
+    SmartDashboard.putBoolean("IsBrake", true);
   }
 
   public void setCoast() {
@@ -286,6 +289,7 @@ public class DriveTrain extends SubsystemBase {
 
     rightFrontMotor.setNeutralMode(NeutralMode.Coast);
     rightRearMotor.setNeutralMode(NeutralMode.Coast);
+    SmartDashboard.putBoolean("IsBrake", false);
   }
 
   @Override

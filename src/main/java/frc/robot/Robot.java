@@ -129,6 +129,7 @@ public class Robot extends TimedRobot {
             m_autonomousCommand.cancel();
         }
         RobotContainer.getInstance().m_driveTrain.setBrake();
+        CommandScheduler.getInstance().cancelAll();
     }
 
     /**
@@ -136,7 +137,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void teleopPeriodic() {
-        CommandScheduler.getInstance().run();
+        //SmartDashboard.putBoolean("Command is Scheduled", CommandScheduler.getInstance().isScheduled(null))
     }
 
     @Override
