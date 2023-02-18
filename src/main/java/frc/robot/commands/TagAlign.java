@@ -33,6 +33,7 @@ public class TagAlign extends CommandBase {
     public boolean fin = false; //is finished, probably unnecessary
     public int side = 0; //multiplier for positioning
     private SequentialCommandGroup group;
+    Command fullAuto;
 
     public TagAlign(DriveTrain m_drivetrain, Camera m_camera, int side){
         this.m_drivetrain = m_drivetrain;
@@ -57,18 +58,18 @@ public class TagAlign extends CommandBase {
           //double y = range * Math.sin(Units.degreesToRadians(yaw));
           //double x = range * Math.cos(Units.degreesToRadians(yaw))- Units.inchesToMeters(14); 
           
-           double angle = result.getBestTarget().getBestCameraToTarget().getRotation().getAngle(); //Between -90 and -180 and 180 and 90
+           double angle = Units.radiansToDegrees(result.getBestTarget().getBestCameraToTarget().getRotation().getAngle()); 
           double x = result.getBestTarget().getBestCameraToTarget().getX() - Units.inchesToMeters(14.5); 
           double y = result.getBestTarget().getBestCameraToTarget().getY(); 
+          double position = m_drivetrain.getHeading();
 
           PathPlannerTrajectory traj1 = PathPlanner.generatePath( //origin -> apriltag
               new PathConstraints(Constants.kMaxSpeedMetersPerSecond, Constants.kMaxAccelerationMetersPerSecondSquared), //1.5, 0.5
-              new PathPoint(new Translation2d(0, 0), Rotation2d.fromDegrees(angle)), // position, heading
-              new PathPoint(new Translation2d(x, y), Rotation2d.fromDegrees(180)) // position (plus/minus side we aim for), heading
+              new PathPoint(new Translation2d(0, 0), Rotation2d.fromDegrees(0)), // position, heading
+              new PathPoint(new Translation2d(x, y), Rotation2d.fromDegrees(-angle - 180)) // position (plus/minus side we aim for), heading
         );
-        //   SmartDashboard.putNumber("current angle", angle);
-        //   SmartDashboard.putNumber("Goal Angle", Units.degreesToRadians(angle*180/Math.abs(angle)));
-
+        SmartDashboard.putNumber("Angle", angle);
+        SmartDashboard.putNumber("Goal Angle", angle - 180);
         PathPlannerTrajectory traj2 = PathPlanner.generatePath( //origin -> 90 degree 1 meter forward
               new PathConstraints(Constants.kMaxSpeedMetersPerSecond, Constants.kMaxAccelerationMetersPerSecondSquared), //1.5, 0.5
               new PathPoint(new Translation2d(0, 0), Rotation2d.fromDegrees(0)), // position, heading
@@ -116,7 +117,7 @@ public class TagAlign extends CommandBase {
               m_drivetrain);
 
           //SmartDashboard.putString("Blah", m_drivetrain.getPose().toString());
-          Command fullAuto = autoBuilder.fullAuto(traj1);
+          fullAuto = autoBuilder.fullAuto(traj1);
 
           group = new SequentialCommandGroup(
               fullAuto.andThen(() -> m_drivetrain.tankDriveVolts(0, 0)));

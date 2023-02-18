@@ -172,6 +172,7 @@ public class DriveTrain extends SubsystemBase {
     m_odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()),
         getLeftEncoderDistance(),
         getRightEncoderDistance());
+        ShiftLow();
   }
 
   @Override
