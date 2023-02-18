@@ -55,10 +55,13 @@ public class Constants {
     public static final double kRamseteB = 2;
     public static final double kRamseteZeta = 0.7;
 
-    public static final String cameraName = "HD_USB_Camera";
+    //public static final String cameraName = "HD_USB_Camera";
+   //  public static final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(9.25);
+   //  public static final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(6.75);
 
+    public static final String cameraName = "IMX219";
     public static final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(9.25);
-    public static final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(6.75);
+    public static final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(3);
 
     public static final double nodeSideDistanceMeters = Units.inchesToMeters(6.25 + 0);
 

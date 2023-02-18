@@ -29,7 +29,6 @@ public class TagAlign extends CommandBase {
     private final DriveTrain m_drivetrain;
     private final Camera m_camera;
     public double TARGET_HEIGHT_METERS = 0; //Height of target (to be changed)
-    final double GOAL_RANGE_METERS = Units.feetToMeters(2); //distance to reach between tag and robot
     public double range, bestTargetYaw;
     public boolean fin = false; //is finished, probably unnecessary
     public int side = 0; //multiplier for positioning
@@ -38,7 +37,6 @@ public class TagAlign extends CommandBase {
     public TagAlign(DriveTrain m_drivetrain, Camera m_camera, int side){
         this.m_drivetrain = m_drivetrain;
         this.m_camera = m_camera;
-        SmartDashboard.putNumber("Goal Distance", GOAL_RANGE_METERS);
         m_drivetrain.setBrake();
         this.side = side;
     }
@@ -55,27 +53,32 @@ public class TagAlign extends CommandBase {
           range = PhotonUtils.calculateDistanceToTargetMeters(Constants.CAMERA_HEIGHT_METERS,
           TARGET_HEIGHT_METERS, Constants.CAMERA_PITCH_RADIANS, Units.degreesToRadians(result.getBestTarget().getPitch()));
 
-          double yaw = -1 * result.getBestTarget().getYaw();
-          double y = range * Math.sin(Units.degreesToRadians(yaw));
-          double x = range * Math.cos(Units.degreesToRadians(yaw))- Units.inchesToMeters(14); 
-          double angle = result.getBestTarget().getBestCameraToTarget().getZ();
-          PathPlannerTrajectory traj1 = PathPlanner.generatePath(
-              new PathConstraints(1.5, 0.5), 
+          //double yaw = -1 * result.getBestTarget().getYaw();
+          //double y = range * Math.sin(Units.degreesToRadians(yaw));
+          //double x = range * Math.cos(Units.degreesToRadians(yaw))- Units.inchesToMeters(14); 
+          
+           double angle = result.getBestTarget().getBestCameraToTarget().getRotation().getAngle(); //Between -90 and -180 and 180 and 90
+          double x = result.getBestTarget().getBestCameraToTarget().getX() - Units.inchesToMeters(14.5); 
+          double y = result.getBestTarget().getBestCameraToTarget().getY(); 
+
+          PathPlannerTrajectory traj1 = PathPlanner.generatePath( //origin -> apriltag
+              new PathConstraints(Constants.kMaxSpeedMetersPerSecond, Constants.kMaxAccelerationMetersPerSecondSquared), //1.5, 0.5
               new PathPoint(new Translation2d(0, 0), Rotation2d.fromDegrees(angle)), // position, heading
-              new PathPoint(new Translation2d(x, y), Rotation2d.fromDegrees(180 - Math.abs(angle))) // position (plus/minus side we aim for), heading
-              //new PathPoint(new Translation2d(range * Math.sin(Units.degreesToRadians(yaw)), range * Math.cos(Units.degreesToRadians(yaw))), Rotation2d.fromDegrees(0)) // position (plus/minus side we aim for), heading
-          );
+              new PathPoint(new Translation2d(x, y), Rotation2d.fromDegrees(180)) // position (plus/minus side we aim for), heading
+        );
+        //   SmartDashboard.putNumber("current angle", angle);
+        //   SmartDashboard.putNumber("Goal Angle", Units.degreesToRadians(angle*180/Math.abs(angle)));
+
+        PathPlannerTrajectory traj2 = PathPlanner.generatePath( //origin -> 90 degree 1 meter forward
+              new PathConstraints(Constants.kMaxSpeedMetersPerSecond, Constants.kMaxAccelerationMetersPerSecondSquared), //1.5, 0.5
+              new PathPoint(new Translation2d(0, 0), Rotation2d.fromDegrees(0)), // position, heading
+              new PathPoint(new Translation2d(1, 0), Rotation2d.fromDegrees(-90)) // position (plus/minus side we aim for), heading
+        );
           SmartDashboard.putNumber("MaxSpeedMeters/Second", Constants.kMaxSpeedMetersPerSecond);
           SmartDashboard.putNumber("Range TagAlign", range); //Distance from center of Robot to the Apriltag center
-          SmartDashboard.putNumber("Yaw", yaw); //Angle between Robot and Tag
+          //SmartDashboard.putNumber("Yaw", yaw); //Angle between Robot and Tag
           SmartDashboard.putNumber("X - 14 inch", x); //X distance between Robot and Tag
-          //SmartDashboard.putNumber("Y", range * Math.cos(Units.degreesToRadians(yaw))); //Y distance between Robot and Tag
           SmartDashboard.putNumber("Y", y); //Y distance between Robot and Tag
-
-          // traj1  = PathPlanner.loadPath(
-          //     RobotContainer.getInstance().getSelectedPath(),
-          //     new PathConstraints(Constants.kMaxSpeedMetersPerSecond,
-          //             Constants.kMaxAccelerationMetersPerSecondSquared));
 
           HashMap<String, Command> eventMap = new HashMap<>();
           /*Strategy Discussion: Fully automate the whole scoring process?
@@ -114,9 +117,11 @@ public class TagAlign extends CommandBase {
 
           //SmartDashboard.putString("Blah", m_drivetrain.getPose().toString());
           Command fullAuto = autoBuilder.fullAuto(traj1);
+
           group = new SequentialCommandGroup(
               fullAuto.andThen(() -> m_drivetrain.tankDriveVolts(0, 0)));
-          group.schedule();
+          
+        group.schedule(); //schedule command for running
       }
     }
 

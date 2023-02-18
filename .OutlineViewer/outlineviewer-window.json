@@ -1,13 +1,13 @@
 {
   "MainWindow": {
     "GLOBAL": {
-      "height": "0",
+      "height": "500",
       "maximized": "0",
       "style": "0",
       "userScale": "2",
-      "width": "0",
-      "xpos": "-32000",
-      "ypos": "-32000"
+      "width": "750",
+      "xpos": "201",
+      "ypos": "230"
     }
   },
   "Table": {
@@ -16,6 +16,11 @@
       "Column 1  Weight": "1.0000",
       "Column 2  Weight": "1.0000",
       "Column 3  Weight": "1.0000"
+    },
+    "0x2BEEDBB4,2": {
+      "Column 0  Width": "160",
+      "Column 1  Weight": "1.0000",
+      "RefScale": "16"
     }
   },
   "Window": {
@@ -27,7 +32,7 @@
     "Entries": {
       "Collapsed": "0",
       "Pos": "0,0",
-      "Size": "46,32"
+      "Size": "750,500"
     },
     "Settings": {
       "Collapsed": "0",

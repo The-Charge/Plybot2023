@@ -1,4 +1,7 @@
 {
+  "Clients": {
+    "open": true
+  },
   "Connections": {
     "open": true
   },
@@ -10,6 +13,12 @@
     "open": false
   },
   "Server": {
+    "Publishers": {
+      "open": true
+    },
+    "Subscribers": {
+      "open": true
+    },
     "open": true
   },
   "Transitory Values": {
