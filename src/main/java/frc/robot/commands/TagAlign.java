@@ -30,7 +30,7 @@ public class TagAlign extends CommandBase {
     private final Camera m_camera;
     public double TARGET_HEIGHT_METERS = 0; //Height of target (to be changed)
     public double range, bestTargetYaw;
-    public boolean fin = false; //is finished, probably unnecessary
+    
     public int side = 0; //multiplier for positioning
     private SequentialCommandGroup group;
     Command fullAuto;
@@ -70,14 +70,8 @@ public class TagAlign extends CommandBase {
         );
         SmartDashboard.putNumber("Angle", angle);
         SmartDashboard.putNumber("Goal Angle", angle - 180);
-        PathPlannerTrajectory traj2 = PathPlanner.generatePath( //origin -> 90 degree 1 meter forward
-              new PathConstraints(Constants.kMaxSpeedMetersPerSecond, Constants.kMaxAccelerationMetersPerSecondSquared), //1.5, 0.5
-              new PathPoint(new Translation2d(0, 0), Rotation2d.fromDegrees(0)), // position, heading
-              new PathPoint(new Translation2d(1, 0), Rotation2d.fromDegrees(-90)) // position (plus/minus side we aim for), heading
-        );
-          SmartDashboard.putNumber("MaxSpeedMeters/Second", Constants.kMaxSpeedMetersPerSecond);
-          SmartDashboard.putNumber("Range TagAlign", range); //Distance from center of Robot to the Apriltag center
-          //SmartDashboard.putNumber("Yaw", yaw); //Angle between Robot and Tag
+
+        //SmartDashboard.putNumber("Yaw", yaw); //Angle between Robot and Tag
           SmartDashboard.putNumber("X - 14 inch", x); //X distance between Robot and Tag
           SmartDashboard.putNumber("Y", y); //Y distance between Robot and Tag
 
