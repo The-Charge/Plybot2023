@@ -30,7 +30,7 @@ public class TagAlign extends CommandBase {
     private final DriveTrain m_drivetrain;
     private final Camera m_camera;
     public double TARGET_HEIGHT_METERS = 0; //Height of target (to be changed)
-    public double range, bestTargetYaw;
+    public double range;
     
     public int side = 0; //multiplier for positioning
     private SequentialCommandGroup group;
@@ -55,27 +55,30 @@ public class TagAlign extends CommandBase {
 
             range = PhotonUtils.calculateDistanceToTargetMeters(Constants.CAMERA_HEIGHT_METERS,
             TARGET_HEIGHT_METERS, Constants.CAMERA_PITCH_RADIANS, Units.degreesToRadians(result.getBestTarget().getPitch()));
-          
+            
+            //For Traj1
             double angle = Units.radiansToDegrees(result.getBestTarget().getBestCameraToTarget().getRotation().getAngle()); 
             double x = result.getBestTarget().getBestCameraToTarget().getX() - Units.inchesToMeters(14.5); 
             double y = result.getBestTarget().getBestCameraToTarget().getY(); 
 
+            //For Traj2
             //double x = PoseEstimator.getTag(7).get().getX();
             //double y = PoseEstimator.getTag(7).get().getY();
             Rotation2d z = PoseEstimator.getTag(7).get().getRotation().toRotation2d();
 
-
+            //Field Oriented Trajectory
             PathPlannerTrajectory traj2 = PathPlanner.generatePath(new PathConstraints(Constants.kMaxSpeedMetersPerSecond, Constants.kMaxAccelerationMetersPerSecondSquared),
              new PathPoint(new Translation2d(PoseEstimator.getCurrentPose().getX(), PoseEstimator.getCurrentPose().getY()), Rotation2d.fromDegrees(m_drivetrain.getHeading())),
              new PathPoint(new Translation2d(x, y), z)
              );
-
+            //Relative Trajectory
             PathPlannerTrajectory traj1 = PathPlanner.generatePath( //origin -> apriltag
                 new PathConstraints(Constants.kMaxSpeedMetersPerSecond, Constants.kMaxAccelerationMetersPerSecondSquared), //1.5, 0.5
                 new PathPoint(new Translation2d(0, 0), Rotation2d.fromDegrees(0)), // position, heading
                 new PathPoint(new Translation2d(x, y), Rotation2d.fromDegrees(-angle - 180)) // position (plus/minus side we aim for), heading
             );
 
+            //HashMap for Events
             HashMap<String, Command> eventMap = new HashMap<>();
             
             RamseteAutoBuilder autoBuilder = new RamseteAutoBuilder(

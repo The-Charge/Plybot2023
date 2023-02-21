@@ -57,11 +57,8 @@ public class Constants {
     public static final double kRamseteB = 2;
     public static final double kRamseteZeta = 0.7;
 
-    //public static final String cameraName = "HD_USB_Camera";
-   //  public static final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(9.25);
-   //  public static final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(6.75);
-
     public static final String cameraName = "IMX219";
+
     public static final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(9.25);
     public static final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(3);
 
@@ -72,22 +69,5 @@ public class Constants {
 
    public static final Transform3d robotToCamera = new Transform3d(new Translation3d(Units.inchesToMeters(13), Units.inchesToMeters(2), Units.inchesToMeters(9.5)), new Rotation3d(0, 20, 0));
    public static final Transform3d cameraToRobot = robotToCamera.inverse();
-
-   
-    // private static final List<AprilTag> targetPoses = Collections.unmodifiableList(
-    //   List.of(
-    //       new AprilTag(1, new Pose3d(Units.inchesToMeters(610.77),Units.inchesToMeters(42.19),Units.inchesToMeters(15.22),new Rotation3d(0,0, Units.degreesToRadians(180)))),
-    //       new AprilTag(7, new Pose3d(Units.inchesToMeters(40.45),Units.inchesToMeters(108.19),Units.inchesToMeters(15.22),new Rotation3d(0,0, Units.degreesToRadians(0))))
-    //       ));
-
-    // public static final AprilTagFieldLayout tagLayout = new AprilTagFieldLayout(targetPoses, 0,0); //Experimental AprilTagFieldLayout
-    /*Hopefully with accurate measurement from research tomorrow:
-     * Robot takes range calculation when a tag is seen, does trig, gets a coordinate.
-     * Concern: How to continuously update this value? More cameras? 
-     * AprilTagFieldLayout: ID Number, Coordinate (x,y) (not sure about z...), Rotation (180 or 0. Might need to vary depending on which side we are on...)
-     * 
-     * Need two different lists of tags depending on which side?
-     * Probably can set the tag values depending on isRedSide() within the TagAlign Command...
-     */
 }
 

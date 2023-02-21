@@ -36,9 +36,12 @@ public class PoseEstimator extends SubsystemBase {
   private static DifferentialDrivePoseEstimator poseEstimator;
   private Optional<EstimatedRobotPose> photonEstimatedRobotPose = Optional.empty();
   private static AprilTagFieldLayout layout;
+
   public PoseEstimator(DriveTrain drivetrain, Camera camera) {
+
     m_DriveTrain = drivetrain;
     m_Camera = camera;
+    //Load AprilTagFieldLayout (Has Apriltag poses etc.)
     try {
       layout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2023ChargedUp.m_resourceFile);
       var alliance = DriverStation.getAlliance();
@@ -48,6 +51,7 @@ public class PoseEstimator extends SubsystemBase {
       DriverStation.reportError("Failed to load AprilTagFieldLayout", e.getStackTrace());
       layout = null;
     }
+    //Create PoseEstimator Objects
     photonPoseEstimator = new PhotonPoseEstimator(layout, PoseStrategy.LOWEST_AMBIGUITY, camera.getFrontCamera(), Constants.robotToCamera);
     poseEstimator = new DifferentialDrivePoseEstimator(Constants.kDriveKinematics, Rotation2d.fromDegrees(m_DriveTrain.getHeading()), m_DriveTrain.getLeftEncoderDistance(), m_DriveTrain.getRightEncoderDistance(), new Pose2d());
     SmartDashboard.putData(field2d);
@@ -55,15 +59,16 @@ public class PoseEstimator extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
     photonEstimatedRobotPose = photonPoseEstimator.update();
+    //If there is pose estimatae from tag data
     if (photonEstimatedRobotPose.isPresent()) {
       EstimatedRobotPose pose = photonEstimatedRobotPose.get();
       try {
         poseEstimator.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds);
       } catch (ConcurrentModificationException e) {}
-      poseEstimator.update(Rotation2d.fromDegrees(m_DriveTrain.getHeading()), m_DriveTrain.getLeftEncoder(), m_DriveTrain.getRightEncoder());
-      
+
+      poseEstimator.update(Rotation2d.fromDegrees(m_DriveTrain.getHeading()), m_DriveTrain.getLeftEncoderDistance(), m_DriveTrain.getRightEncoderDistance());
+      //Adjust positioning on field2d based on which alliance color (Different origin points)
       if (DriverStation.getAlliance() == Alliance.Red) {
         field2d.setRobotPose(new Pose2d(Constants.fieldLength - getCurrentPose().getX(), Constants.fieldWidth - getCurrentPose().getY(), new Rotation2d(getCurrentPose().getRotation().getRadians() + Math.PI)));
       }
@@ -72,12 +77,15 @@ public class PoseEstimator extends SubsystemBase {
       }
     }
   }
+  //Returns latest pose from DifferentialDrivePoseEstimator
   public static Pose2d getCurrentPose() {
     return poseEstimator.getEstimatedPosition();
   }
+  //Plot Trajectory onto field2d
   public static void addTrajectory(PathPlannerTrajectory traj) {
     field2d.getObject("Trajectory").setTrajectory(traj);
   }
+  //get tag pose information (for tagAlign)
   public static Optional<Pose3d> getTag(int ID) {
     return layout.getTagPose(ID);
   }
