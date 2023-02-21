@@ -26,8 +26,10 @@ public class Camera extends SubsystemBase{
         if (res.hasTargets()) { //if targets sighted
             double range = PhotonUtils.calculateDistanceToTargetMeters(Constants.CAMERA_HEIGHT_METERS,
             Units.inchesToMeters(21), Constants.CAMERA_PITCH_RADIANS, Units.degreesToRadians(res.getBestTarget().getPitch()));
+
             Transform3d pose = res.getBestTarget().getBestCameraToTarget(); 
             var bestTarget = res.getBestTarget(); //get the "best target"
+            
             SmartDashboard.putNumber("ID", bestTarget.getFiducialId()); //put "best target" ID onto smartdash
             SmartDashboard.putNumber("Range", range);
             SmartDashboard.putNumber("Z", Units.radiansToDegrees(pose.getRotation().getAngle()));

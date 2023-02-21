@@ -13,6 +13,7 @@ import com.pathplanner.lib.auto.RamseteAutoBuilder;
 
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -34,6 +35,7 @@ public class TagAlign extends CommandBase {
     public int side = 0; //multiplier for positioning
     private SequentialCommandGroup group;
     Command fullAuto;
+    boolean fin = false;
 
     public TagAlign(DriveTrain m_drivetrain, Camera m_camera, int side){
         this.m_drivetrain = m_drivetrain;
@@ -42,59 +44,41 @@ public class TagAlign extends CommandBase {
         this.side = side;
     }
     @Override
-    public void initialize() {
+    public void execute() {
       //get result, if there are targets within the cameraview
-      var result = m_camera.getFrontCamera().getLatestResult();
-      if (result.hasTargets()) {
+        var result = m_camera.getFrontCamera().getLatestResult();
+        if (result.hasTargets()) {
           //calculate range between robot and bestTarget
-          if (result.getBestTarget().getFiducialId() == 7) {
+            if (result.getBestTarget().getFiducialId() == 7) {
               TARGET_HEIGHT_METERS = Units.inchesToMeters(21);
-          }
+            }
 
-          range = PhotonUtils.calculateDistanceToTargetMeters(Constants.CAMERA_HEIGHT_METERS,
-          TARGET_HEIGHT_METERS, Constants.CAMERA_PITCH_RADIANS, Units.degreesToRadians(result.getBestTarget().getPitch()));
-
-          //double yaw = -1 * result.getBestTarget().getYaw();
-          //double y = range * Math.sin(Units.degreesToRadians(yaw));
-          //double x = range * Math.cos(Units.degreesToRadians(yaw))- Units.inchesToMeters(14); 
+            range = PhotonUtils.calculateDistanceToTargetMeters(Constants.CAMERA_HEIGHT_METERS,
+            TARGET_HEIGHT_METERS, Constants.CAMERA_PITCH_RADIANS, Units.degreesToRadians(result.getBestTarget().getPitch()));
           
-           double angle = Units.radiansToDegrees(result.getBestTarget().getBestCameraToTarget().getRotation().getAngle()); 
-          double x = result.getBestTarget().getBestCameraToTarget().getX() - Units.inchesToMeters(14.5); 
-          double y = result.getBestTarget().getBestCameraToTarget().getY(); 
-          double position = m_drivetrain.getHeading();
+            double angle = Units.radiansToDegrees(result.getBestTarget().getBestCameraToTarget().getRotation().getAngle()); 
+            double x = result.getBestTarget().getBestCameraToTarget().getX() - Units.inchesToMeters(14.5); 
+            double y = result.getBestTarget().getBestCameraToTarget().getY(); 
 
-          PathPlannerTrajectory traj1 = PathPlanner.generatePath( //origin -> apriltag
-              new PathConstraints(Constants.kMaxSpeedMetersPerSecond, Constants.kMaxAccelerationMetersPerSecondSquared), //1.5, 0.5
-              new PathPoint(new Translation2d(0, 0), Rotation2d.fromDegrees(0)), // position, heading
-              new PathPoint(new Translation2d(x, y), Rotation2d.fromDegrees(-angle - 180)) // position (plus/minus side we aim for), heading
-        );
-        SmartDashboard.putNumber("Angle", angle);
-        SmartDashboard.putNumber("Goal Angle", angle - 180);
+            //double x = PoseEstimator.getTag(7).get().getX();
+            //double y = PoseEstimator.getTag(7).get().getY();
+            Rotation2d z = PoseEstimator.getTag(7).get().getRotation().toRotation2d();
 
-        //SmartDashboard.putNumber("Yaw", yaw); //Angle between Robot and Tag
-          SmartDashboard.putNumber("X - 14 inch", x); //X distance between Robot and Tag
-          SmartDashboard.putNumber("Y", y); //Y distance between Robot and Tag
 
-          HashMap<String, Command> eventMap = new HashMap<>();
-          /*Strategy Discussion: Fully automate the whole scoring process?
-           * Utilize FollowPathWithEvents?
-           * Otherwise, perhaps just use sequence of commands.
-           * 
-           * TagAlign -> AutonomousCommand -> Score 
-           * 
-           * TagAlign Button Pressed (Which Tag to Align to, which side of the node) -> Robot goes to said position
-           * Two different Methods
-           * 1. Utilize surrounding Apriltags to draw path?
-           * 2. Wait till Tag is in viewing distance? Can probably tune TagCamera to target specific ID
-           * 
-           * Considerations: What if friendly robot is also in the scoring area? How do we avoid them? Waypoints?
-           * What about the obstacles on the field? How can we exclude certain positions from being reached given that an obstacle is there? Pose Estimation via AprilTagFieldLayout + Path Planner Trajectory combo?
-           * 
-           * Scoring Button Pressed (Which position to score into) -> Robot adjusts distance between itself and node to accomidate distances of the arm -> ReflectiveTapeCamera helps adjust to line up with poles if need be 
-           * -> Arm lowers -> Claw opens (Piece hopefully drops) -> ???
-           * ???: Return to Driver input? Automatically drive out of the "trench"?
-          */
-          RamseteAutoBuilder autoBuilder = new RamseteAutoBuilder(
+            PathPlannerTrajectory traj2 = PathPlanner.generatePath(new PathConstraints(Constants.kMaxSpeedMetersPerSecond, Constants.kMaxAccelerationMetersPerSecondSquared),
+             new PathPoint(new Translation2d(PoseEstimator.getCurrentPose().getX(), PoseEstimator.getCurrentPose().getY()), Rotation2d.fromDegrees(m_drivetrain.getHeading())),
+             new PathPoint(new Translation2d(x, y), z)
+             );
+
+            PathPlannerTrajectory traj1 = PathPlanner.generatePath( //origin -> apriltag
+                new PathConstraints(Constants.kMaxSpeedMetersPerSecond, Constants.kMaxAccelerationMetersPerSecondSquared), //1.5, 0.5
+                new PathPoint(new Translation2d(0, 0), Rotation2d.fromDegrees(0)), // position, heading
+                new PathPoint(new Translation2d(x, y), Rotation2d.fromDegrees(-angle - 180)) // position (plus/minus side we aim for), heading
+            );
+
+            HashMap<String, Command> eventMap = new HashMap<>();
+            
+            RamseteAutoBuilder autoBuilder = new RamseteAutoBuilder(
               m_drivetrain::getPose,
               m_drivetrain::resetOdometry,
               new RamseteController(Constants.kRamseteB, Constants.kRamseteZeta),
@@ -110,22 +94,26 @@ public class TagAlign extends CommandBase {
               false,
               m_drivetrain);
 
-          //SmartDashboard.putString("Blah", m_drivetrain.getPose().toString());
           fullAuto = autoBuilder.fullAuto(traj1);
 
           group = new SequentialCommandGroup(
               fullAuto.andThen(() -> m_drivetrain.tankDriveVolts(0, 0)));
           
         group.schedule(); //schedule command for running
+        PoseEstimator.addTrajectory(traj1); //add trajectory to the field object
+
+        SmartDashboard.putNumber("Angle", angle);
+        SmartDashboard.putNumber("Goal Angle", angle - 180);
+
+        SmartDashboard.putNumber("X - 14 inch", x); //X distance between Robot and Tag
+        SmartDashboard.putNumber("Y", y); //Y distance between Robot and Tag
+        fin = true;
       }
     }
 
     @Override
-    public void execute() {
-    }
-    @Override
     public boolean isFinished() {
-        if (group == null) {
+        if ((group == null) || fin) {
             return true;
         }
         else {

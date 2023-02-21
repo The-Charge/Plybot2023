@@ -180,19 +180,19 @@ public class DriveTrain extends SubsystemBase {
     // This method will be called once per scheduler run
 
     /* Display 6-axis Processed Angle Data */
-    SmartDashboard.putBoolean("IMU_Connected", navx.isConnected());
-    SmartDashboard.putNumber("IMU_Yaw", navx.getYaw());
-    SmartDashboard.putNumber("IMU_Pitch", navx.getPitch());
+    // SmartDashboard.putBoolean("IMU_Connected", navx.isConnected());
+    // SmartDashboard.putNumber("IMU_Yaw", navx.getYaw());
+    // SmartDashboard.putNumber("IMU_Pitch", navx.getPitch());
 
-    // displays encoder ticks
-    SmartDashboard.putNumber("Left Encoder", getLeftEncoder());
-    SmartDashboard.putNumber("Right Encoder", getRightEncoder());
+    // // displays encoder ticks
+    // SmartDashboard.putNumber("Left Encoder", getLeftEncoder());
+    // SmartDashboard.putNumber("Right Encoder", getRightEncoder());
 
-    // display motor group distance
-    SmartDashboard.putNumber("Left Distance", getLeftEncoderDistance());
-    SmartDashboard.putNumber("Right Distance", getRightEncoderDistance());
+    // // display motor group distance
+     SmartDashboard.putNumber("Left Distance", getLeftEncoderDistance());
+     SmartDashboard.putNumber("Right Distance", getRightEncoderDistance());
 
-    SmartDashboard.putNumber("Get Heading", getHeading());
+    // SmartDashboard.putNumber("Get Heading", getHeading());
 
     m_odometry.update(Rotation2d.fromDegrees(getHeading()),
         getLeftEncoderDistance(),

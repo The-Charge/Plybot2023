@@ -1,0 +1,39 @@
+{
+  "NetworkTables": {
+    "transitory": {
+      "SmartDashboard": {
+        "Field": {
+          "open": true
+        },
+        "open": true
+      }
+    },
+    "types": {
+      "/FMSInfo": "FMSInfo",
+      "/SmartDashboard/Auto Path Chooser": "String Chooser",
+      "/SmartDashboard/Autonomous Command": "Command",
+      "/SmartDashboard/Field": "Field2d",
+      "/SmartDashboard/ShiftHigh": "Command",
+      "/SmartDashboard/ShiftLow": "Command",
+      "/SmartDashboard/TankDrive": "Command"
+    },
+    "windows": {
+      "/SmartDashboard/Field": {
+        "Robot": {
+          "length": 0.6600000262260437,
+          "width": 0.7599999904632568
+        },
+        "height": 8.013699531555176,
+        "image": "C:\\Users\\progr\\Downloads\\2023-fieldcrop.png",
+        "width": 16.540000915527344,
+        "window": {
+          "visible": true
+        }
+      }
+    }
+  },
+  "NetworkTables Settings": {
+    "mode": "Client (NT4)",
+    "serverTeam": "2619"
+  }
+}

@@ -18,6 +18,8 @@ import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.util.Units;
 
@@ -65,7 +67,13 @@ public class Constants {
 
     public static final double nodeSideDistanceMeters = Units.inchesToMeters(6.25 + 0);
 
+   public static final double fieldLength = Units.inchesToMeters(651.25);
+   public static final double fieldWidth = Units.inchesToMeters(315.5);
 
+   public static final Transform3d robotToCamera = new Transform3d(new Translation3d(Units.inchesToMeters(13), Units.inchesToMeters(2), Units.inchesToMeters(9.5)), new Rotation3d(0, 20, 0));
+   public static final Transform3d cameraToRobot = robotToCamera.inverse();
+
+   
     // private static final List<AprilTag> targetPoses = Collections.unmodifiableList(
     //   List.of(
     //       new AprilTag(1, new Pose3d(Units.inchesToMeters(610.77),Units.inchesToMeters(42.19),Units.inchesToMeters(15.22),new Rotation3d(0,0, Units.degreesToRadians(180)))),
