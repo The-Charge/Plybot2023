@@ -205,6 +205,7 @@ public class DriveTrain extends SubsystemBase {
       l *= -1;
       r *= -1;
     }
+    SmartDashboard.putBoolean("Motors Reversed", isReversed);
     // runs numbers from joystick y axis
     left.set(l);
     right.set(r);
