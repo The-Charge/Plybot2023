@@ -32,7 +32,10 @@ public class Camera extends SubsystemBase{
             
             SmartDashboard.putNumber("ID", bestTarget.getFiducialId()); //put "best target" ID onto smartdash
             SmartDashboard.putNumber("Range", range);
-            SmartDashboard.putNumber("Z", Units.radiansToDegrees(pose.getRotation().getAngle()));
+            SmartDashboard.putNumber("X", pose.getX());
+            SmartDashboard.putNumber("X adjusted", pose.getX() - Units.inchesToMeters(14.5));
+            SmartDashboard.putNumber("Y", pose.getY());
+            SmartDashboard.putNumber("Rotation dif", Units.radiansToDegrees(pose.getRotation().getAngle()));
             SmartDashboard.putNumber("Pose Ambiguity",res.getBestTarget().getPoseAmbiguity());
         }
         else {

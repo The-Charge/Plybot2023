@@ -12,13 +12,13 @@
       "userScale": "2",
       "width": "1280",
       "xpos": "317",
-      "ypos": "113"
+      "ypos": "59"
     }
   },
   "Window": {
     "###/SmartDashboard/Field": {
       "Collapsed": "0",
-      "Pos": "75,110",
+      "Pos": "105,58",
       "Size": "1055,626"
     },
     "###NetworkTables": {

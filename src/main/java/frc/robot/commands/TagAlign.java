@@ -102,7 +102,7 @@ public class TagAlign extends CommandBase {
           group = new SequentialCommandGroup(
               fullAuto.andThen(() -> m_drivetrain.tankDriveVolts(0, 0)));
           
-        group.schedule(); //schedule command for running
+        //group.schedule(); //schedule command for running
         PoseEstimator.addTrajectory(traj1); //add trajectory to the field object
 
         SmartDashboard.putNumber("Angle", angle);

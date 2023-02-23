@@ -13,6 +13,7 @@
       "/SmartDashboard/Auto Path Chooser": "String Chooser",
       "/SmartDashboard/Autonomous Command": "Command",
       "/SmartDashboard/Field": "Field2d",
+      "/SmartDashboard/ReverseDrive": "Command",
       "/SmartDashboard/ShiftHigh": "Command",
       "/SmartDashboard/ShiftLow": "Command",
       "/SmartDashboard/TankDrive": "Command"
@@ -24,7 +25,7 @@
           "width": 0.7599999904632568
         },
         "height": 8.013699531555176,
-        "image": "C:\\Users\\progr\\Downloads\\2023-fieldcrop.png",
+        "image": "C:\\Users\\progr\\Downloads\\2023-field.png",
         "width": 16.540000915527344,
         "window": {
           "visible": true

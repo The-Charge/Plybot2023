@@ -55,6 +55,7 @@ public class PoseEstimator extends SubsystemBase {
     photonPoseEstimator = new PhotonPoseEstimator(layout, PoseStrategy.LOWEST_AMBIGUITY, camera.getFrontCamera(), Constants.robotToCamera);
     poseEstimator = new DifferentialDrivePoseEstimator(Constants.kDriveKinematics, Rotation2d.fromDegrees(m_DriveTrain.getHeading()), m_DriveTrain.getLeftEncoderDistance(), m_DriveTrain.getRightEncoderDistance(), new Pose2d());
     SmartDashboard.putData(field2d);
+    SmartDashboard.putString("Tag Pose", getTag(7).get().toString());
   }
 
   @Override
@@ -76,9 +77,13 @@ public class PoseEstimator extends SubsystemBase {
         field2d.setRobotPose(getCurrentPose());
       }
     }
+    SmartDashboard.putNumber("X Pose", getCurrentPose().getX());
+    SmartDashboard.putNumber("Y Pose", getCurrentPose().getY());
+    SmartDashboard.putNumber("Heading", getCurrentPose().getRotation().getDegrees());
   }
   //Returns latest pose from DifferentialDrivePoseEstimator
   public static Pose2d getCurrentPose() {
+    SmartDashboard.putString("Current Estimated Position", poseEstimator.getEstimatedPosition().toString());
     return poseEstimator.getEstimatedPosition();
   }
   //Plot Trajectory onto field2d
