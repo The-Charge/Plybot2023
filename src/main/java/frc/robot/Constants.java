@@ -22,6 +22,7 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -40,34 +41,41 @@ public class Constants {
     *   public static final int kRightMotor2Port = 3; 
     * }
     */ 
-    public static final double ksVolts = 1.8516;
-    public static final double kvVoltSecondsPerMeter = 4.9995;
-    public static final double kaVoltSecondsSquaredPerMeter = 1.0077/6;
-    public static final double kPDriveVel = 20;
-    public static final double kIDriveVel = 1;
-    public static final double kDDriveVel = 0.05;
+   public static final double ksVolts = 1.8516;
+   public static final double kvVoltSecondsPerMeter = 4.9995;
+   public static final double kaVoltSecondsSquaredPerMeter = 1.0077/6;
+   public static final double kPDriveVel = 20;
+   public static final double kIDriveVel = 1;
+   public static final double kDDriveVel = 0.05;
     
 
-    public static final double kTrackwidthMeters = .67847; 
-    public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(kTrackwidthMeters);
+   public static final double kTrackwidthMeters = .67847; 
+   public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(kTrackwidthMeters);
     
-    public static final double kMaxSpeedMetersPerSecond = 1.5;
-    public static final double kMaxAccelerationMetersPerSecondSquared = 0.5;
 
-    public static final double kRamseteB = 2;
-    public static final double kRamseteZeta = 0.7;
+   public static final double kMaxSpeedMetersPerSecond = 1;
+   public static final double kMaxAccelerationMetersPerSecondSquared = 0.5;
 
-    public static final String cameraName = "IMX219";
+   public static final double kRamseteB = 2;
+   public static final double kRamseteZeta = 0.7;
 
-    public static final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(9.25);
-    public static final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(3);
+   public static final String cameraName = "IMX219";
 
-    public static final double nodeSideDistanceMeters = Units.inchesToMeters(6.25 + 0);
+   public static final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(9.25);
+   public static final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(19);
+
+   public static final double nodeSideDistanceMeters = Units.inchesToMeters(6.25 + 0);
 
    public static final double fieldLength = Units.inchesToMeters(651.25);
    public static final double fieldWidth = Units.inchesToMeters(315.5);
 
-   public static final Transform3d robotToCamera = new Transform3d(new Translation3d(Units.inchesToMeters(13), Units.inchesToMeters(2), Units.inchesToMeters(9.5)), new Rotation3d(0, 20, 0));
+   public static final Transform3d robotToCamera = new Transform3d(new Translation3d(0.31, 0.07, Units.inchesToMeters(9.5)), new Rotation3d(0, 19, 0));
    public static final Transform3d cameraToRobot = robotToCamera.inverse();
+
+   //31,7
+   public static final double LINEAR_P = 1;
+   public static final double LINEAR_D = 0;
+   public static final double ANGULAR_P = 0.05; //0.05
+   public static final double ANGULAR_D = 0;
 }
 

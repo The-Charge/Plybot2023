@@ -13,7 +13,6 @@ import com.pathplanner.lib.auto.RamseteAutoBuilder;
 
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -21,7 +20,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
-import frc.robot.RobotContainer;
 import frc.robot.subsystems.*;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 
@@ -47,21 +45,31 @@ public class TagAlign extends CommandBase {
     public void execute() {
       //get result, if there are targets within the cameraview
         var result = m_camera.getFrontCamera().getLatestResult();
+
         if (result.hasTargets()) {
-          //calculate range between robot and bestTarget
+
+            //Adjust to which tag to change to
             if (result.getBestTarget().getFiducialId() == 7) {
-              TARGET_HEIGHT_METERS = Units.inchesToMeters(21);
+              TARGET_HEIGHT_METERS = Units.inchesToMeters(15.3);
             }
 
+            //calculate range between robot and bestTarget
             range = PhotonUtils.calculateDistanceToTargetMeters(Constants.CAMERA_HEIGHT_METERS,
             TARGET_HEIGHT_METERS, Constants.CAMERA_PITCH_RADIANS, Units.degreesToRadians(result.getBestTarget().getPitch()));
             
-            //For Traj1
+            //For Traj1 (Relative)
             double angle = Units.radiansToDegrees(result.getBestTarget().getBestCameraToTarget().getRotation().getAngle()); 
             double x = result.getBestTarget().getBestCameraToTarget().getX() - Units.inchesToMeters(14.5); 
             double y = result.getBestTarget().getBestCameraToTarget().getY(); 
 
-            //For Traj2
+            //Relative Trajectory
+            PathPlannerTrajectory traj1 = PathPlanner.generatePath( //origin -> apriltag
+                new PathConstraints(Constants.kMaxSpeedMetersPerSecond, Constants.kMaxAccelerationMetersPerSecondSquared), //1.5, 0.5
+                new PathPoint(new Translation2d(0, 0), Rotation2d.fromDegrees(0)), // position, heading
+                new PathPoint(new Translation2d(x, y), Rotation2d.fromDegrees(-angle - 180)) // position (plus/minus side we aim for), heading
+            );
+
+            //For Traj2 (Field)
             //double x = PoseEstimator.getTag(7).get().getX();
             //double y = PoseEstimator.getTag(7).get().getY();
             Rotation2d z = PoseEstimator.getTag(7).get().getRotation().toRotation2d();
@@ -71,16 +79,11 @@ public class TagAlign extends CommandBase {
              new PathPoint(new Translation2d(PoseEstimator.getCurrentPose().getX(), PoseEstimator.getCurrentPose().getY()), Rotation2d.fromDegrees(m_drivetrain.getHeading())),
              new PathPoint(new Translation2d(x, y), z)
              );
-            //Relative Trajectory
-            PathPlannerTrajectory traj1 = PathPlanner.generatePath( //origin -> apriltag
-                new PathConstraints(Constants.kMaxSpeedMetersPerSecond, Constants.kMaxAccelerationMetersPerSecondSquared), //1.5, 0.5
-                new PathPoint(new Translation2d(0, 0), Rotation2d.fromDegrees(0)), // position, heading
-                new PathPoint(new Translation2d(x, y), Rotation2d.fromDegrees(-angle - 180)) // position (plus/minus side we aim for), heading
-            );
+            
 
             //HashMap for Events
             HashMap<String, Command> eventMap = new HashMap<>();
-            
+            //Autobuilder to run command
             RamseteAutoBuilder autoBuilder = new RamseteAutoBuilder(
               m_drivetrain::getPose,
               m_drivetrain::resetOdometry,
@@ -96,13 +99,14 @@ public class TagAlign extends CommandBase {
               eventMap,
               false,
               m_drivetrain);
-
-          fullAuto = autoBuilder.fullAuto(traj1);
-
+            
+              //build auto
+              fullAuto = autoBuilder.fullAuto(traj1);
+              //create sequential to stop
           group = new SequentialCommandGroup(
               fullAuto.andThen(() -> m_drivetrain.tankDriveVolts(0, 0)));
           
-        //group.schedule(); //schedule command for running
+        group.schedule(); //schedule command for running
         PoseEstimator.addTrajectory(traj1); //add trajectory to the field object
 
         SmartDashboard.putNumber("Angle", angle);

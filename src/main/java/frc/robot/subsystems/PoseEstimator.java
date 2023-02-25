@@ -61,13 +61,13 @@ public class PoseEstimator extends SubsystemBase {
   @Override
   public void periodic() {
     photonEstimatedRobotPose = photonPoseEstimator.update();
-    //If there is pose estimatae from tag data
+    //if there is pose estimate from tag data
     if (photonEstimatedRobotPose.isPresent()) {
       EstimatedRobotPose pose = photonEstimatedRobotPose.get();
       try {
         poseEstimator.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds);
       } catch (ConcurrentModificationException e) {}
-
+      //update the poseEstimator
       poseEstimator.update(Rotation2d.fromDegrees(m_DriveTrain.getHeading()), m_DriveTrain.getLeftEncoderDistance(), m_DriveTrain.getRightEncoderDistance());
       //Adjust positioning on field2d based on which alliance color (Different origin points)
       if (DriverStation.getAlliance() == Alliance.Red) {
@@ -94,5 +94,4 @@ public class PoseEstimator extends SubsystemBase {
   public static Optional<Pose3d> getTag(int ID) {
     return layout.getTagPose(ID);
   }
-  
 }
