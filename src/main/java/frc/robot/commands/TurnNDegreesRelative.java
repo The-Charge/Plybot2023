@@ -61,8 +61,9 @@ public class TurnNDegreesRelative extends CommandBase {
         double degreesInitial = m_driveTrain.getDegrees();
         finalDegrees = degreesInitial + m_nDegrees;
 
-        controller = new PIDController(.005, 0, 0);
-        // .01, 0, 0 works for 90
+        controller = new PIDController(.01, 0, 0);
+        // .01 p works for 90
+        // .005 p for 180
         controller.enableContinuousInput(-180.0, 180.0);
         controller.setTolerance(1.0);
         controller.setSetpoint(finalDegrees);
