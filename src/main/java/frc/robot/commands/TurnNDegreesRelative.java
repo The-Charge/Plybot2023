@@ -61,54 +61,54 @@ public class TurnNDegreesRelative extends CommandBase {
         double degreesInitial = m_driveTrain.getDegrees();
         finalDegrees = degreesInitial + m_nDegrees;
 
-        // controller = new PIDController(0.5, 0.00, 0.0);
-        // controller.enableContinuousInput(-180.0, 180.0);
-        // controller.setTolerance(1.0);
-        // controller.setSetpoint(finalDegrees);
-        // SmartDashboard.putNumber("Setpoint", finalDegrees);
-        // m_driveTrain.setControlMode(ControlMode.PercentOutput);
+        controller = new PIDController(1, 0.10, 0.005);
+        controller.enableContinuousInput(-180.0, 180.0);
+        controller.setTolerance(1.0);
+        controller.setSetpoint(finalDegrees);
+        SmartDashboard.putNumber("Init degree", degreesInitial);
+        SmartDashboard.putNumber("Setpoint", finalDegrees);
+        m_driveTrain.setControlMode(ControlMode.PercentOutput);
 
     }
 
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        // double output = controller.calculate(m_driveTrain.getDegrees());
-        // MathUtil.clamp(output, -0.5, 0.5);
-        // int sign = (int) Math.signum(output);
-        // double minSpeed = 0.05;
-        // output = sign * Math.max(minSpeed, Math.abs(output));
-        // SmartDashboard.putNumber("output", output);
-        // SmartDashboard.putNumber("Angle", m_driveTrain.getDegrees());
-        // m_driveTrain.run(output, -1 * output);
+        double output = controller.calculate(m_driveTrain.getDegrees());
+        MathUtil.clamp(output, -0.5, 0.5);
+        int sign = (int) Math.signum(output);
+        double minSpeed = 0.05;
+        output = sign * Math.max(minSpeed, Math.abs(output));
+        m_driveTrain.run(output, -1 * output);
 
         SmartDashboard.putNumber("Destination angle", finalDegrees);
+        SmartDashboard.putNumber("output", output);
+        SmartDashboard.putNumber("Angle", m_driveTrain.getDegrees());
+        // double leftSpeed = 0, rightSpeed = 0;
+        // double speed = 0;
+        // if(finalDegrees - m_driveTrain.getDegrees()<15) {
+        // speed = .5;
+        // } else if (finalDegrees - m_driveTrain.getDegrees()<25) {
+        // speed = .6;
+        // } else {
+        // speed = .7;
+        // }
+        // if (finalDegrees - m_driveTrain.getDegrees()>0) {
+        // leftSpeed = speed;
+        // rightSpeed = -1*speed;
+        // SmartDashboard.putString("Direction", "Right");
+        // } else if (finalDegrees - m_driveTrain.getDegrees()>0) {
+        // leftSpeed = -1*speed;
+        // rightSpeed = speed;
+        // SmartDashboard.putString("Direction", "Left");
+        // } else {
+        // leftSpeed = 0;
+        // rightSpeed = 0;
+        // SmartDashboard.putString("Direction", "None");
+        // }
 
-        double leftSpeed = 0, rightSpeed = 0;
-        double speed = 0;
-        if(finalDegrees - m_driveTrain.getDegrees()<15) {
-        speed = .5;
-        } else if (finalDegrees - m_driveTrain.getDegrees()<25) {
-        speed = .6;
-        } else {
-        speed = .7;
-        }
-        if (finalDegrees - m_driveTrain.getDegrees()>0) {
-        leftSpeed = speed;
-        rightSpeed = -1*speed;
-        SmartDashboard.putString("Direction", "Right");
-        } else if (finalDegrees - m_driveTrain.getDegrees()>0) {
-        leftSpeed = -1*speed;
-        rightSpeed = speed;
-        SmartDashboard.putString("Direction", "Left");
-        } else {
-        leftSpeed = 0;
-        rightSpeed = 0;
-        SmartDashboard.putString("Direction", "None");
-        }
-
-        m_driveTrain.run(leftSpeed, rightSpeed);
-        SmartDashboard.putNumber("Speed", speed);
+        // m_driveTrain.run(leftSpeed, rightSpeed);
+        // SmartDashboard.putNumber("Speed", speed);
         // //m_driveTrain.relTurn(finalDegrees, .8);
 
     }
@@ -123,12 +123,12 @@ public class TurnNDegreesRelative extends CommandBase {
     @Override
     public boolean isFinished() {
         SmartDashboard.putNumber("Robot Angle", m_driveTrain.getDegrees());
-        // return controller.atSetpoint();
-        if(Math.abs(Math.abs(finalDegrees)-Math.abs(m_driveTrain.getDegrees()))<3) {
-        return true;
-        } else {
-        return false;
-        }
+         return controller.atSetpoint();
+        // if(Math.abs(Math.abs(finalDegrees)-Math.abs(m_driveTrain.getDegrees()))<3) {
+        // return true;
+        // } else {
+        // return false;
+        // }
 
     }
 

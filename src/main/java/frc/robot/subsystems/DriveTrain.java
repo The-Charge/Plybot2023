@@ -77,7 +77,7 @@ public class DriveTrain extends SubsystemBase {
 
     /* Invert Motor? and set Break Mode */
     leftFrontMotor.setInverted(false);
-    leftFrontMotor.setNeutralMode(NeutralMode.Coast);
+    leftFrontMotor.setNeutralMode(NeutralMode.Brake);
 
     /* Set the peak and nominal outputs */
     leftFrontMotor.configNominalOutputForward(0, 30);
@@ -105,7 +105,7 @@ public class DriveTrain extends SubsystemBase {
 
     /* Invert Motor? and set Break Mode */
     leftRearMotor.setInverted(false);
-    leftRearMotor.setNeutralMode(NeutralMode.Coast);
+    leftRearMotor.setNeutralMode(NeutralMode.Brake);
 
     /* Set the peak and nominal outputs */
     leftRearMotor.configNominalOutputForward(0, 30);
@@ -123,7 +123,7 @@ public class DriveTrain extends SubsystemBase {
 
     /* Invert Motor? and set Break Mode */
     rightFrontMotor.setInverted(true);
-    rightFrontMotor.setNeutralMode(NeutralMode.Coast);
+    rightFrontMotor.setNeutralMode(NeutralMode.Brake);
 
     /* Set the peak and nominal outputs */
     rightFrontMotor.configNominalOutputForward(0, 30);
@@ -151,7 +151,7 @@ public class DriveTrain extends SubsystemBase {
 
     /* Invert Motor? and set Break Mode */
     rightRearMotor.setInverted(true);
-    rightRearMotor.setNeutralMode(NeutralMode.Coast);
+    rightRearMotor.setNeutralMode(NeutralMode.Brake);
 
     /* Set the peak and nominal outputs */
     rightRearMotor.configNominalOutputForward(0, 30);
@@ -195,6 +195,7 @@ public class DriveTrain extends SubsystemBase {
     SmartDashboard.putNumber("Right Distance", getRightEncoderDistance());
 
     SmartDashboard.putNumber("Get Heading", getHeading());
+    SmartDashboard.putNumber("Get Angle", getDegrees());
 
     m_odometry.update(Rotation2d.fromDegrees(getHeading()),
         getLeftEncoderDistance(),
