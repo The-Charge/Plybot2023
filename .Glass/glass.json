@@ -16,17 +16,26 @@
       "/SmartDashboard/ReverseDrive": "Command",
       "/SmartDashboard/ShiftHigh": "Command",
       "/SmartDashboard/ShiftLow": "Command",
-      "/SmartDashboard/TankDrive": "Command"
+      "/SmartDashboard/TankDrive": "Command",
+      "/SmartDashboard/closeClaw": "Command",
+      "/SmartDashboard/openClaw": "Command"
     },
     "windows": {
       "/SmartDashboard/Field": {
         "Robot": {
+          "color": [
+            1.0,
+            0.0,
+            0.0,
+            255.0
+          ],
           "length": 0.6600000262260437,
+          "style": "Box/Image",
           "width": 0.7599999904632568
         },
-        "height": 8.013699531555176,
+        "height": 8.013999938964844,
         "image": "C:\\Users\\progr\\Downloads\\2023-field.png",
-        "width": 16.540000915527344,
+        "width": 15.149999618530273,
         "window": {
           "visible": true
         }
